@@ -1,7 +1,7 @@
 require 'jwt'
 
 module Nstance
-  module Eval
+  module Rails
     module Token
       class ExerciseToken
         SECRET = ENV["EVAL_TOKEN_SECRET"]

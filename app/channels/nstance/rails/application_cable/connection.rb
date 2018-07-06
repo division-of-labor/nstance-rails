@@ -1,4 +1,4 @@
-module ApplicationCable
+module Nstance::Rails::ApplicationCable
   class Connection < ActionCable::Connection::Base
     identified_by :uuid
 
