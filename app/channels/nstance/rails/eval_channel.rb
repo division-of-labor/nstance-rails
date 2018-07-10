@@ -1,8 +1,7 @@
 module Nstance::Rails
   class EvalChannel < ApplicationCable::Channel
     # Each eval view subscribes to this channel and sends a JWT token, which
-    # contains the language to evaluate, or for exercises, the image and full
-    # command to use.
+    # contains the image and full command to use.
     def subscribed
       @token = Nstance::Rails::Token.decode(params[:token])
     end
@@ -15,7 +14,7 @@ module Nstance::Rails
 
         runner.on_complete do |result|
           @runner = nil
-          attempt_exercise(@token, result)
+          transmit_result(@token, result)
         end
 
         @runner = runner
@@ -29,19 +28,15 @@ module Nstance::Rails
 
   private
 
-    def exercise?
-      !!params[:is_exercise]
-    end
-
     def instance
       connection.cached_eval_instance(@token)
     end
 
-    def attempt_exercise(token, result)
+    def transmit_result(token, result)
       success = !result.timeout? && !result.error &&
         attempt_success?(result.status, result.log, token.success_regexp)
 
-      transmit exercise_result: {
+      transmit result: {
         success:   success,
         exit_code: result.status,
         output:    result.log
