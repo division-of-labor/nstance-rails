@@ -14,9 +14,8 @@ module Nstance
       "csharp"     => { cmd: "/app/build.sh", image: "jwolgamott/tiy-dotnet-runnable:0.4-beta" }
     }
 
-    def self.image_for_lang(lang)
-      config = Nstance::Rails::LANGUAGE_CONFIGS[lang]
-      config[:image]
+    def self.config_for_lang(lang)
+      Nstance::Rails::LANGUAGE_CONFIGS[lang]
     end
 
     def self.token(cmd:, image:, success_regexp: nil, stdin: false)
