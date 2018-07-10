@@ -30,7 +30,7 @@ module Nstance
       end
 
       def timeout
-        token.stdin? ? 1.minute : 30
+        token.stdin? ? 1.minute : 30.seconds
       end
 
       def docker_image
