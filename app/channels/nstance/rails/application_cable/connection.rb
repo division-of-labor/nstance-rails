@@ -25,10 +25,8 @@ module Nstance::Rails::ApplicationCable
           @eval_instance&.stop
 
           case token
-          when Nstance::Rails::Token::ExerciseToken
-            @eval_instance = Nstance::Rails::ExerciseEvalInstance.new(token)
-          when Nstance::Rails::Token::EvalToken
-            @eval_instance = Nstance::Rails::RunnableCodeEvalInstance.new(token)
+          when Nstance::Rails::Token
+            @eval_instance = Nstance::Rails::EvalInstance.new(token)
           else
             raise ArgumentError
           end

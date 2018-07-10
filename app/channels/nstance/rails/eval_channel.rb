@@ -4,29 +4,10 @@ module Nstance::Rails
     # contains the language to evaluate, or for exercises, the image and full
     # command to use.
     def subscribed
-      if exercise?
-        @token = Nstance::Rails::Token::ExerciseToken.decode(params[:token])
-      else
-        @token = Nstance::Rails::Token::EvalToken.decode(params[:token])
-      end
+      @token = Nstance::Rails::Token.decode(params[:token])
     end
 
     def eval(data)
-      instance.run(data["code"]) do |runner|
-        runner.on_chunk do |stream, chunk|
-          transmit chunk: chunk.force_encoding("UTF-8")
-        end
-
-        runner.on_complete do |result|
-          @runner = nil
-          transmit output: result.log, status: result.status
-        end
-
-        @runner = runner
-      end
-    end
-
-    def eval_exercise(data)
       instance.run(files: data["files"]) do |runner|
         runner.on_chunk do |stream, chunk|
           transmit chunk: chunk.force_encoding("UTF-8")
@@ -34,7 +15,7 @@ module Nstance::Rails
 
         runner.on_complete do |result|
           @runner = nil
-          attempt_exercise(@token, result, data["files"])
+          attempt_exercise(@token, result)
         end
 
         @runner = runner
@@ -56,7 +37,7 @@ module Nstance::Rails
       connection.cached_eval_instance(@token)
     end
 
-    def attempt_exercise(token, result, files = {})
+    def attempt_exercise(token, result)
       success = !result.timeout? && !result.error &&
         attempt_success?(result.status, result.log, token.success_regexp)
 
