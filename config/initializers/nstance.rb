@@ -1,6 +1,6 @@
-# if Rails.env.development? || Rails.env.test?
-#   Nstance.log.level = :debug
-# end
+if Rails.env.development? || Rails.env.test?
+  Nstance.log.level = :debug
+end
 
 # if ENV["DOCKER_HOST_CERT"]
 #   Docker.url = ENV["DOCKER_HOST"]
