@@ -20,6 +20,7 @@ Gem::Specification.new do |s|
   s.add_dependency "jwt", "~> 2.1.0"
   s.add_dependency "dotenv-rails", "~> 2.5.0"
   s.add_dependency "puma"
+  s.add_dependency "redis", "~> 4.0"
 
   s.add_development_dependency "sqlite3"
   s.add_development_dependency "rspec-rails"
