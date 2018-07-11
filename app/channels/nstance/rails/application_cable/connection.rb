@@ -5,11 +5,6 @@ module Nstance::Rails::ApplicationCable
     def connect
       self.uuid = SecureRandom.uuid
       @mutex = Mutex.new
-      @current_user = env["warden"].user
-    end
-
-    def current_user
-      @current_user
     end
 
     def disconnect
