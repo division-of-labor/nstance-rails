@@ -1,30 +1,29 @@
 require "nstance/rails/engine"
-require "nstance/rails/runnable_code_eval_instance"
-require "nstance/rails/token/exercise_token"
-require "nstance/rails/token/eval_token"
+require "nstance/rails/token"
+require "nstance/rails/eval_instance"
 
 module Nstance
   module Rails
-    def self.image_for_lang(lang)
-      Nstance::Rails::RunnableCodeEvalInstance::LANGUAGE_CONFIGS[Nstance::Rails::RunnableCodeEvalInstance::LANGUAGE_ALIASES[lang] || lang]
+    # Default used if constant not set in config/initializers/nstance_rails.rb
+    LANGUAGE_CONFIGS = {
+      "javascript" => { cmd: "node",          image: "node:6.2.0" },
+      "ruby"       => { cmd: "ruby",          image: "ruby:2.4.0" },
+      "python"     => { cmd: "python",        image: "python:3.5.1" },
+      "swift"      => { cmd: "swift",         image: "swiftdocker/swift:snapshot-2016-09-02-a" },
+      "java"       => { cmd: "",              image: "openjdk:8-jdk" },
+      "csharp"     => { cmd: "/app/build.sh", image: "jwolgamott/tiy-dotnet-runnable:0.4-beta" }
+    }
+
+    def self.config_for_lang(lang)
+      Nstance::Rails::LANGUAGE_CONFIGS[lang]
     end
 
-    def self.exercise_eval_token(exercise)
-      token = Nstance::Rails::Token::ExerciseToken.new(
-        cmd:            exercise.cmd,
-        image:          exercise.docker_image,
-        success_regexp: exercise.success_regexp,
-        # user_id:        current_user.id
-      ).encode
-
-      token
-    end
-
-    def self.eval_token_for_code_fence(fence)
-      token = Nstance::Rails::Token::EvalToken.new(
-        lang:  fence.lang,
-        image: fence.image,
-        stdin: fence.stdin?
+    def self.token(cmd:, image:, success_regexp: nil, stdin: false)
+      token = Nstance::Rails::Token.new(
+        cmd:            cmd,
+        image:          image,
+        success_regexp: success_regexp,
+        stdin:          stdin
       ).encode
 
       token
